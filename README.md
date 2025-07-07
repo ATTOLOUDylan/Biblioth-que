@@ -89,13 +89,13 @@ def creer_admin():
     cur = conn.cursor()
 
     # Supprime l’ancien compte admin s’il existe
-    cur.execute("DELETE FROM utilisateurs WHERE email = 'admin@bib.bj'")
+    cur.execute("DELETE FROM utilisateurs WHERE email = 'admin@gmail.com'")
 
     # Crée un nouveau compte admin (modifiable ici)
     cur.execute("""
         INSERT INTO utilisateurs (nom, email, mot_de_passe, is_admin)
         VALUES (?, ?, ?, 1)
-    """, ("Administrateur", "admin@bib.bj", "admin2005"))
+    """, ("Administrateur", "admin@gmail.com", "admin2005"))
 
     conn.commit()
     conn.close()
@@ -115,7 +115,7 @@ Change simplement l’adresse email ou le mot de passe directement dans le fichi
 cur.execute("""
     INSERT INTO utilisateurs (nom, email, mot_de_passe, is_admin)
     VALUES (?, ?, ?, 1)
-""", ("Administrateur", "admin@bib.bj", "admin2005"))
+""", ("Administrateur", "admin@gmail.com", "admin2005"))
 ```
 ## 👤 Auteur
 
