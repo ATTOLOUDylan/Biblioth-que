@@ -1,33 +1,47 @@
-# 📚 Projet Bibliothèque en Console
+# 📚 Bibliothèque Console (Python + SQLite)
 
-Une application Python simple pour gérer une petite bibliothèque en ligne de commande.  
-Elle permet l’ajout de livres, la gestion des utilisateurs, et le suivi des emprunts, le tout **sans base de données** (stockage via fichiers JSON).
+Une application Python simple en mode **console** pour gérer une petite bibliothèque.  
+Elle permet d’ajouter des livres, d’emprunter et de rendre, de créer des comptes utilisateurs, et dispose d’un **compte administrateur unique** pour la gestion des livres.
 
 ---
 
 ## 🚀 Fonctionnalités
 
-- 📘 Ajouter un livre
-- 📖 Lister tous les livres
+- 📘 Ajouter un livre *(admin uniquement)*
+- 📖 Lister les livres disponibles
 - 🔍 Rechercher un livre par titre ou auteur
-- 🧑 S’inscrire en tant qu’utilisateur
+- 🧑‍💻 Créer un compte utilisateur
 - 🔐 Se connecter
 - 📥 Emprunter un livre
 - 📤 Rendre un livre
-- 💾 Sauvegarde automatique des données
+- 🔁 Changer son mot de passe
+- 🔑 Gestion d’un seul compte administrateur
+- 💾 Données stockées en base **SQLite (bibliotheque.db)**
 
 ---
 
-## 📁 Structure du projet
-```bash
+## 🛠️ Technologies utilisées
+
+- Python 3.x
+- SQLite (intégré via le module `sqlite3`)
+- `getpass` pour sécuriser la saisie des mots de passe
+- Aucune bibliothèque externe
+
+---
+
+## 📁 Arborescence du projet
+
+```plaintext
 bibliotheque/
-├── bibliothèque.py # Menu principal de l'application
-├── livre.py # Fonctions de gestion des livres
-├── utilisateur.py # Fonctions pour gérer les utilisateurs
-├── compte.py # Interface pour l'utilisateur connecté
-├── livres.json # Fichier de stockage des livres
-├── utilisateur.json # Fichier de stockage des utilisateurs
-├── README.md # Ce fichier de documentation
+├── Bibliothèque.py         # Menu principal
+├── db.py                   # Création de la base de données
+├── livre.py                # Gestion des livres
+├── utilisateur.py          # Gestion des utilisateurs
+├── compte.py               # Menu utilisateur connecté
+├── admin_creator.py        # Script pour créer/modifier le compte admin
+├── bibliotheque.db         # Fichier SQLite (généré automatiquement)
+└── README.md               # Documentation du projet
+
 ```
 
 ---
@@ -46,14 +60,63 @@ bibliotheque/
    📝 Assure-toi d’avoir Python 3.x installé sur ton ordinateur
   ---
 ```
-## 🔧 Technologies utilisées
+## 👤 Compte Administrateur
 
-- Python 3.x
-- Fichiers JSON (`livres.json`, `utilisateur.json`)
-- Aucune bibliothèque externe
+Par défaut, l’application fonctionne avec **un seul compte admin**.  
+Ce compte est **le seul autorisé à ajouter des livres**.
 
 ---
 
+### 🔐 Informations par défaut
+
+| Email           | Mot de passe | Rôle  |
+|----------------|--------------|-------|
+| `admin@bib.bj` | `admin2005`  | Admin |
+
+---
+
+### 🛠️ Modifier ou recréer le compte admin
+
+Si tu veux **changer l'email ou le mot de passe** de l’admin, utilise le fichier :
+
+📄 `admin_creator.py`
+
+```python
+import sqlite3
+
+def creer_admin():
+    conn = sqlite3.connect("bibliotheque.db")
+    cur = conn.cursor()
+
+    # Supprime l’ancien compte admin s’il existe
+    cur.execute("DELETE FROM utilisateurs WHERE email = 'admin@bib.bj'")
+
+    # Crée un nouveau compte admin (modifiable ici)
+    cur.execute("""
+        INSERT INTO utilisateurs (nom, email, mot_de_passe, is_admin)
+        VALUES (?, ?, ?, 1)
+    """, ("Administrateur", "admin@bib.bj", "admin2005"))
+
+    conn.commit()
+    conn.close()
+    print("✅ Admin mis à jour avec succès.")
+
+if __name__ == "__main__":
+    creer_admin()
+```
+---
+
+### 💡 Modifier l’email ou le mot de passe
+
+Change simplement l’adresse email ou le mot de passe directement dans le fichier `admin_creator.py` :
+
+```python
+# Exemple à modifier :
+cur.execute("""
+    INSERT INTO utilisateurs (nom, email, mot_de_passe, is_admin)
+    VALUES (?, ?, ?, 1)
+""", ("Administrateur", "admin@bib.bj", "admin2005"))
+```
 ## 👤 Auteur
 
 - **Dylan** – Développeur du projet
